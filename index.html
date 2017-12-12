@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.min.css">
   </head>
   <body>
-    
+
     <nav class="navbar is-transparent">
       <div class="navbar-brand">
-        <a class="navbar-item" href="#">
+        <a class="navbar-item" href="https://btcz.rocks">
           <img src="logo.png" alt="BitcoinZ Community Chest" >
         </a>
         <div class="navbar-burger burger" data-target="navbarExampleTransparentExample">
@@ -21,15 +21,17 @@
         </div>
       </div>
 
+      <!--
       <div id="navbarExampleTransparentExample" class="navbar-menu">
         <div class="navbar-start">
         </div>
+        -->
 
         <div class="navbar-end">
           <div class="navbar-item">
             <div class="field is-grouped">
               <p class="control">
-                <a class="bd-tw-button button" data-social-network="Facebook" target="_blank" href="https://www.facebook.com/BTCZCommunity/">
+                <a class="bd-tw-button button" data-social-network="Facebook" data-social-action="share" data-social-target="https://btcz.fund" target="_blank" href="https://www.facebook.com/BTCZCommunity/">
                   <span class="icon">
                     <i class="fa fa-facebook"></i>
                   </span>
@@ -39,7 +41,7 @@
                 </a>
               </p>
               <p class="control">
-                <a class="bd-tw-button button" data-social-network="Twitter" target="_blank" href="https://twitter.com/BitcoinZTeam">
+                <a class="bd-tw-button button" data-social-network="Twitter" data-social-action="tweet" data-social-target="https://btcz.fund" target="_blank" href="https://twitter.com/intent/tweet?text=$BTCZ is the future and it needs your help!&amp;hashtags=btcz,BitcoinZ&amp;url=https://btcz.fund&amp;via=BitcoinZTeam">
                   <span class="icon">
                     <i class="fa fa-twitter"></i>
                   </span>
@@ -49,7 +51,7 @@
                 </a>
               </p>
               <p class="control">
-                <a class="bd-tw-button button" data-social-network="Slack" target="_blank" href="https://bitcoinzcoin.slack.com">
+                <a class="bd-tw-button button" data-social-network="Slack" data-social-action="connect" data-social-target="https://btcz.fund" target="_blank" href="https://slack.btcz.rocks">
                   <span class="icon">
                     <i class="fa fa-slack"></i>
                   </span>
@@ -122,7 +124,7 @@
             </div>
             <p><progress id="progress" class="progress is-large is-warning" value="0" max="0">0%</progress></p>
             <br><br>
-            
+
             <div class="conatiner">
               <div class="columns is-centered">
                 <div class="column has-text-centered">
@@ -187,7 +189,7 @@
             <p id="zecUsd" class="">Loading...</p>
           </div>
         </div>
-      </nav>  
+      </nav>
     </div>
 
     <footer class="footer">
@@ -197,10 +199,8 @@
       </div>
     </div>
   </footer>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript">
-
       var goal = 1000000; // donation goal in USD
       var current = 0; // current chest value
 
@@ -215,9 +215,8 @@
         currency: 'USD',
         minimumFractionDigits: 8,
       });
-      
+
       function updateData() {
-        console.log('update data');
         $('#goal').html(formatter.format(goal));
         $('#progress').attr('max', goal);
         $('#icon').addClass('fa-spin');
