@@ -1,9 +1,12 @@
 <?php
 
-const BTCZ_ADDRESS = "t1fHHnAXxoPWGY77sG5Zw2sFfGUTpW6BcSZ";
-const ETH_ADDRESS = "0x4E3154bc8691BC480D0F317E866C064cC2c9455D";
-const BTC_ADDRESS = "1BzBfikDBGyWXGnPPk58nVVBppzfcGGXMx";
-const ZEC_ADDRESS = "t1ef9cxzpToGJcaSMXbTGRUDyrp76GfDLJG";
+const BTCZ_ADDRESSES = [
+    't1fHHnAXxoPWGY77sG5Zw2sFfGUTpW6BcSZ',
+    't1L7TtcRPKztgScLnfUToe4sa2aFKf9rQ14',
+];
+const ETH_ADDRESS = '0x4E3154bc8691BC480D0F317E866C064cC2c9455D';
+const BTC_ADDRESS = '1BzBfikDBGyWXGnPPk58nVVBppzfcGGXMx';
+const ZEC_ADDRESS = 't1ef9cxzpToGJcaSMXbTGRUDyrp76GfDLJG';
 
 const CACHE_TEMPLATE = __DIR__ . '/cache/%s.cache';
 
@@ -26,44 +29,49 @@ function setCache($key, $value) {
 
 
 function getCoinPrice($coin) {
-    if ($cache = getCache($coin."-price")) {
+    if ($cache = getCache($coin.'-price')) {
         return $cache;
     }
 
-    $data = file_get_contents("https://api.coinmarketcap.com/v1/ticker/" . $coin);
+    $data = file_get_contents('https://api.coinmarketcap.com/v1/ticker/' . $coin);
     if ($data === false) {
         return null;
     }
 
     $data = json_decode($data);
-    setCache($coin."-price", $data[0]->price_usd);
+    setCache($coin.'-price', $data[0]->price_usd);
 
     return $data[0]->price_usd;
 }
 
 function getBtczBalance()
 {
-    if ($cache = getCache("btcz-balance")) {
+    if ($cache = getCache('btcz-balance')) {
         return $cache;
     }
 
-    $data = file_get_contents("http://btczexplorer.blockhub.info/ext/getbalance/" . BTCZ_ADDRESS);
-    if ($data === false) {
-        return null;
+    $total = 0;
+    foreach (BTCZ_ADDRESSES as $address) {
+        $addressTotal = file_get_contents('http://btczexplorer.blockhub.info/ext/getbalance/' . $address);
+        if (!$addressTotal) {
+            return null;
+        }
+
+        $total += $addressTotal;
     }
 
-    setCache("btcz-balance", $data);
+    setCache('btcz-balance', $total);
 
-    return $data;
+    return $total;
 }
 
 function getEthBalance()
 {
-    if ($cache = getCache("eth-balance")) {
+    if ($cache = getCache('eth-balance')) {
         return $cache;
     }
 
-    $data = file_get_contents("https://etherchain.org/api/account/" . ETH_ADDRESS);
+    $data = file_get_contents('https://etherchain.org/api/account/' . ETH_ADDRESS);
     if ($data === false) {
         return null;
     }
@@ -73,41 +81,41 @@ function getEthBalance()
         return null;
     }
 
-    setCache("eth-balance", $data->data[0]->balance / 1000000000000000000);
+    setCache('eth-balance', $data->data[0]->balance / 1000000000000000000);
 
     return $data->data[0]->balance / 1000000000000000000;
 }
 
 function getBtcBalance()
 {
-    if ($cache = getCache("btc-balance")) {
+    if ($cache = getCache('btc-balance')) {
         return $cache;
     }
 
-    $data = file_get_contents("http://blockchain.info/q/addressbalance/" . BTC_ADDRESS);
+    $data = file_get_contents('http://blockchain.info/q/addressbalance/' . BTC_ADDRESS);
     if ($data === false) {
         return null;
     }
 
-    setCache("btc-balance", $data);
+    setCache('btc-balance', $data);
 
     return $data;
 }
 
 function getZecBalance()
 {
-    if ($cache = getCache("zec-balance")) {
+    if ($cache = getCache('zec-balance')) {
         return $cache;
     }
 
-    $data = file_get_contents("https://api.zcha.in/v2/mainnet/accounts/" . ZEC_ADDRESS);
+    $data = file_get_contents('https://api.zcha.in/v2/mainnet/accounts/' . ZEC_ADDRESS);
 
     if (!$data) {
         return null;
     }
 
     $data = json_decode($data);
-    setCache("zec-balance", $data->balance);
+    setCache('zec-balance', $data->balance);
 
     return $data->balance;
 }
