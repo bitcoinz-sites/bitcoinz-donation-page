@@ -7,6 +7,7 @@ const BTCZ_ADDRESSES = [
 const ETH_ADDRESS = '0x4E3154bc8691BC480D0F317E866C064cC2c9455D';
 const BTC_ADDRESS = '1BzBfikDBGyWXGnPPk58nVVBppzfcGGXMx';
 const ZEC_ADDRESS = 't1ef9cxzpToGJcaSMXbTGRUDyrp76GfDLJG';
+const LTC_ADDRESS = 'LR8bPo7NjPNRVy6nPLVgr9zHee2C7RepKA';
 
 const CACHE_TEMPLATE = __DIR__ . '/cache/%s.cache';
 
@@ -120,15 +121,33 @@ function getZecBalance()
     return $data->balance;
 }
 
+function getLtcBalance()
+{
+    if ($cache = getCache('ltc-balance')) {
+        return $cache;
+    }
+
+    $data = file_get_contents('https://chainz.cryptoid.info/ltc/api.dws?q=getbalance&a=' . LTC_ADDRESS);
+    if ($data === false) {
+        return null;
+    }
+
+    setCache('ltc-balance', $data);
+
+    return $data;
+}
+
 $response = [
     'btczBalance' => getBtczBalance(),
     'ethBalance' => getEthBalance(),
     'btcBalance' => getBtcBalance(),
     'zecBalance' => getZecBalance(),
+    'ltcBalance' => getLtcBalance(),
     'btczUsd' => getCoinPrice('bitcoinz'),
     'ethUsd' => getCoinPrice('ethereum'),
     'btcUsd' => getCoinPrice('bitcoin'),
-    'zecUsd' => getCoinPrice('zcash')
+    'zecUsd' => getCoinPrice('zcash'),
+    'ltcUsd' => getCoinPrice('litecoin')
 ];
 
 echo json_encode($response);

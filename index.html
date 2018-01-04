@@ -155,6 +155,12 @@
                         <span class="tag is-large is-danger is-size-6" style="width: 70%;">t1ef9cxzpToGJcaSMXbTGRUDyrp76GfDLJG</span>
                       </div>
                     </li>
+                    <li>
+                      <div class="tags has-addons has-addons-centered">
+                        <span class="tag is-large is-size-6" style="width: 30%;">Litecoin</span>
+                        <span class="tag is-large is-info is-size-6" style="width: 70%;">LR8bPo7NjPNRVy6nPLVgr9zHee2C7RepKA</span>
+                      </div>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -167,26 +173,32 @@
       <nav class="level">
         <div class="level-item has-text-centered">
           <div>
-            <p class="heading">BTCZ PRICE</p>
-            <p id="btczUsd" class="is-loading">Loading...</p>
+            <p class="heading">BITCOINZ PRICE</p>
+            <p id="btczUsd">Loading...</p>
           </div>
         </div>
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">ETHEREUM PRICE</p>
-            <p id="ethUsd" class="">Loading...</p>
+            <p id="ethUsd">Loading...</p>
           </div>
         </div>
         <div class="level-item has-text-centered">
           <div>
-            <p class="heading">BTC PRICE</p>
-            <p id="btcUsd" class="">Loading...</p>
+            <p class="heading">BITCOIN PRICE</p>
+            <p id="btcUsd">Loading...</p>
           </div>
         </div>
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">ZCASH PRICE</p>
-            <p id="zecUsd" class="">Loading...</p>
+            <p id="zecUsd">Loading...</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">LITECOIN PRICE</p>
+            <p id="ltcUsd">Loading...</p>
           </div>
         </div>
       </nav>
@@ -227,11 +239,13 @@
           $('#ethUsd').html( formatter.format(data.ethUsd));
           $('#btcUsd').html( formatter.format(data.btcUsd));
           $('#zecUsd').html( formatter.format(data.zecUsd));
+          $('#ltcUsd').html( formatter.format(data.ltcUsd));
 
           current = data.btczBalance * data.btczUsd;
           current += data.ethBalance * data.ethUsd;
           current += data.btcBalance * data.btcUsd;
           current += data.zecBalance * data.zecUsd;
+          current += data.ltcBalance * data.ltcUsd;
 
           $('#current').html(formatter.format(current));
           $('#progress').attr('value', current);
