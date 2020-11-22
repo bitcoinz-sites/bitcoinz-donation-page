@@ -63,7 +63,7 @@
             </div>
           </div>
         </div>
-      </div>
+      
     </nav>
 
     <div class="container is-fluid">
@@ -203,7 +203,7 @@
         </div>
       </nav>
     </div>
-
+    </div>
     <footer class="footer">
     <div class="container">
       <div class="has-text-centered">
@@ -234,7 +234,7 @@
         $('#icon').addClass('fa-spin');
         $('#icon').attr('title', "Refreshing...");
 
-        $.getJSON( "/api.php", function(data) {
+        $.getJSON( "api.php", function(data) {
           $('#btczUsd').html( formatterBtcz.format(data.btczUsd));
           $('#ethUsd').html( formatter.format(data.ethUsd));
           $('#btcUsd').html( formatter.format(data.btcUsd));
