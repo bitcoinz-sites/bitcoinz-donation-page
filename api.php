@@ -31,19 +31,21 @@ function setCache($key, $value) {
 
 
 function getCoinPrice($coin) {
-    if ($cache = getCache($coin.'-price')) {
-        return $cache;
-    }
+    
+    #if ($cache = getCache($coin.'-price')) {
+    #    return $cache;
+    #}
 
-    $data = file_get_contents('https://api.coinmarketcap.com/v1/ticker/' . $coin);
+    $data = file_get_contents('https://api.coingecko.com/api/v3/simple/price?ids='.$coin.'&vs_currencies=usd');
     if ($data === false) {
         return null;
     }
+    
 
     $data = json_decode($data);
-    setCache($coin.'-price', $data[0]->price_usd);
+    #setCache($coin.'-price', $data->bitcoinz->usd);
 
-    return $data[0]->price_usd;
+    return (float)($data->$coin->usd);
 }
 
 function getBtczBalance()
@@ -55,9 +57,7 @@ function getBtczBalance()
     $total = 0;
     foreach (BTCZ_ADDRESSES as $address) {
         $addressTotal = file_get_contents('http://btczexplorer.blockhub.info/ext/getbalance/' . $address);
-        if (!$addressTotal) {
-            return null;
-        }
+        
 
         $total += $addressTotal;
     }
@@ -69,6 +69,7 @@ function getBtczBalance()
 
 function getEthBalance()
 {
+    return 0;
     if ($cache = getCache('eth-balance')) {
         return $cache;
     }
@@ -98,6 +99,8 @@ function getBtcBalance()
     if ($data === false) {
         return null;
     }
+    
+    $data = $data/100000000;
 
     setCache('btc-balance', $data);
 
