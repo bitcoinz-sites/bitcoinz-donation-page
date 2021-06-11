@@ -161,6 +161,12 @@
                         <span class="tag is-large is-info is-size-6" style="width: 70%;">LR8bPo7NjPNRVy6nPLVgr9zHee2C7RepKA</span>
                       </div>
                     </li>
+                    <li>
+                      <div class="tags has-addons has-addons-centered">
+                        <span class="tag is-large is-size-6" style="width: 30%;">USDT (Ethereum Network)</span>
+                        <span class="tag is-large is-success is-size-6" style="width: 70%;">0xD36591b20f738f6929272a4391B8C133CB2e5C96</span>
+                      </div>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -199,6 +205,12 @@
           <div>
             <p class="heading">LITECOIN PRICE</p>
             <p id="ltcUsd">Loading...</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">USDT PRICE</p>
+            <p id="USDTEUsd">Loading...</p>
           </div>
         </div>
       </nav>
@@ -240,12 +252,14 @@
           $('#btcUsd').html( formatter.format(data.btcUsd));
           $('#zecUsd').html( formatter.format(data.zecUsd));
           $('#ltcUsd').html( formatter.format(data.ltcUsd));
+          $('#USDTEUsd').html( formatter.format(data.USDTEUsd));
 
           current = data.btczBalance * data.btczUsd;
           current += data.ethBalance * data.ethUsd;
           current += data.btcBalance * data.btcUsd;
           current += data.zecBalance * data.zecUsd;
           current += data.ltcBalance * data.ltcUsd;
+          current += data.USDTEBalance * data.USDTEUsd;
 
           $('#current').html(formatter.format(current));
           $('#progress').attr('value', current);
