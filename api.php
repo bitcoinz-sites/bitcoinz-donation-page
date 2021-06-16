@@ -148,7 +148,8 @@ function getUSDTEBalance()
         return $cache;
     }
 
-    $data = file_get_contents('https://blockchair.com/ethereum/address/' . USDTE_ADDRESS);
+    $data = explode(',\"', explode('balance_usd\":',(json_encode(file_get_contents('https://api.blockchair.com/ethereum/dashboards/address/' . USDTE_ADDRESS))))[1])[0];
+    
     if ($data === false) {
         return null;
     }
