@@ -9,6 +9,8 @@ const ETH_ADDRESS = '0x4E3154bc8691BC480D0F317E866C064cC2c9455D';
 const BTC_ADDRESS = '1BzBfikDBGyWXGnPPk58nVVBppzfcGGXMx';
 const ZEC_ADDRESS = 't1ef9cxzpToGJcaSMXbTGRUDyrp76GfDLJG';
 const LTC_ADDRESS = 'LR8bPo7NjPNRVy6nPLVgr9zHee2C7RepKA';
+const USDTE_ADDRESS = '0xD36591b20f738f6929272a4391B8C133CB2e5C96';
+
 
 const CACHE_TEMPLATE = __DIR__ . '/cache/%s.cache';
 
@@ -140,18 +142,35 @@ function getLtcBalance()
 
     return $data;
 }
+function getUSDTEBalance()
+{
+    if ($cache = getCache('USDTE-balance')) {
+        return $cache;
+    }
 
+    $data = explode(',\"', explode('balance_usd\":',(json_encode(file_get_contents('https://api.blockchair.com/ethereum/dashboards/address/' . USDTE_ADDRESS))))[1])[0];
+    
+    if ($data === false) {
+        return null;
+    }
+
+    setCache('USDTE-balance', $data);
+
+    return $data;
+}
 $response = [
     'btczBalance' => getBtczBalance(),
     'ethBalance' => getEthBalance(),
     'btcBalance' => getBtcBalance(),
     'zecBalance' => getZecBalance(),
     'ltcBalance' => getLtcBalance(),
+    'USDTEBalance' => getUSDTEBalance(),
     'btczUsd' => getCoinPrice('bitcoinz'),
     'ethUsd' => getCoinPrice('ethereum'),
     'btcUsd' => getCoinPrice('bitcoin'),
     'zecUsd' => getCoinPrice('zcash'),
     'ltcUsd' => getCoinPrice('litecoin')
+    'USDTEUsd' => getCoinPrice('USDT')
 ];
 
 echo json_encode($response);
