@@ -33,7 +33,7 @@ function setCache($key, $value) {
 
 
 function getCoinPrice($coin) {
-    
+
     #if ($cache = getCache($coin.'-price')) {
     #    return $cache;
     #}
@@ -42,7 +42,7 @@ function getCoinPrice($coin) {
     if ($data === false) {
         return null;
     }
-    
+
 
     $data = json_decode($data);
     #setCache($coin.'-price', $data->bitcoinz->usd);
@@ -59,7 +59,7 @@ function getBtczBalance()
     $total = 0;
     foreach (BTCZ_ADDRESSES as $address) {
         $addressTotal = file_get_contents('http://btczexplorer.blockhub.info/ext/getbalance/' . $address);
-        
+
 
         $total += $addressTotal;
     }
@@ -101,7 +101,7 @@ function getBtcBalance()
     if ($data === false) {
         return null;
     }
-    
+
     $data = $data/100000000;
 
     setCache('btc-balance', $data);
@@ -149,7 +149,7 @@ function getUSDTEBalance()
     }
 
     $data = explode(',\"', explode('balance_usd\":',(json_encode(file_get_contents('https://api.blockchair.com/ethereum/dashboards/address/' . USDTE_ADDRESS))))[1])[0];
-    
+
     if ($data === false) {
         return null;
     }
@@ -169,7 +169,7 @@ $response = [
     'ethUsd' => getCoinPrice('ethereum'),
     'btcUsd' => getCoinPrice('bitcoin'),
     'zecUsd' => getCoinPrice('zcash'),
-    'ltcUsd' => getCoinPrice('litecoin')
+    'ltcUsd' => getCoinPrice('litecoin'),
     'USDTEUsd' => getCoinPrice('USDT')
 ];
 
