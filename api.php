@@ -170,7 +170,7 @@ $response = [
     'btcUsd' => getCoinPrice('bitcoin'),
     'zecUsd' => getCoinPrice('zcash'),
     'ltcUsd' => getCoinPrice('litecoin'),
-    'USDTEUsd' => getCoinPrice('USDT')
+    'USDTEUsd' => getCoinPrice('tether')
 ];
 
 echo json_encode($response);
