@@ -147,16 +147,17 @@ function getUSDTEBalance()
     if ($cache = getCache('USDTE-balance')) {
         return $cache;
     }
+    
+    $address = USDTE_ADDRESS;
+    $data = json_decode(file_get_contents("https://api.etherscan.io/api?module=account&action=tokenbalance&contractaddress=0xdac17f958d2ee523a2206206994597c13d831ec7&address={$address}"));
 
-    $data = explode(',\"', explode('balance_usd\":',(json_encode(file_get_contents('https://api.blockchair.com/ethereum/dashboards/address/' . USDTE_ADDRESS))))[1])[0];
-
-    if ($data === false) {
+    if ((!isset($data->status) && $data->status !== 1) || $data === false) {
         return null;
     }
 
-    setCache('USDTE-balance', $data);
+    setCache('USDTE-balance', $data->result * 0.000001);
 
-    return $data;
+    return $data->result * 0.000001;
 }
 $response = [
     'btczBalance' => getBtczBalance(),
