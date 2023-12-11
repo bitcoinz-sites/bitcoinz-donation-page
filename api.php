@@ -58,7 +58,7 @@ function getBtczBalance()
 
     $total = 0;
     foreach (BTCZ_ADDRESSES as $address) {
-        $addressTotal = file_get_contents('http://btczexplorer.blockhub.info/ext/getbalance/' . $address);
+        $addressTotal = file_get_contents('https://explorer.btcz.rocks/address/' . $address);
 
 
         $total += $addressTotal;
