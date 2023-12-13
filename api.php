@@ -58,12 +58,13 @@ function getBtczBalance()
 
     $total = 0;
     foreach (BTCZ_ADDRESSES as $address) {
-        $addressTotal = file_get_contents('https://explorer.btcz.rocks/address/' . $address);
+        $addressTotal = file_get_contents('https://explorer.btcz.rocks/api/addr/' . $address . '/balance');
 
 
         $total += $addressTotal;
     }
 
+    $total = $total / 1000000000000000000;
     setCache('btcz-balance', $total);
 
     return $total;
