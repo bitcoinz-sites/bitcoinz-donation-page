@@ -181,36 +181,43 @@
           <div>
             <p class="heading">BITCOINZ PRICE</p>
             <p id="btczUsd">Loading...</p>
+            <p>BTCZ: <span id="btczBalance"></span></p>
           </div>
         </div>
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">ETHEREUM PRICE</p>
             <p id="ethUsd">Loading...</p>
+            <p>ETH: <span id="ethBalance"></span></p>
           </div>
         </div>
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">BITCOIN PRICE</p>
             <p id="btcUsd">Loading...</p>
+            <p>BTC: <span id="btcBalance"></span></p>
           </div>
         </div>
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">ZCASH PRICE</p>
             <p id="zecUsd">Loading...</p>
+            <p>ZEC: <span id="zecBalance"></span></p>
           </div>
         </div>
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">LITECOIN PRICE</p>
             <p id="ltcUsd">Loading...</p>
+            <p>LTC: <span id="ltcBalance"></span></p>
           </div>
         </div>
         <div class="level-item has-text-centered">
           <div>
             <p class="heading">USDT PRICE</p>
             <p id="USDTEUsd">Loading...</p>
+            <p>USDT: <span id="USDTEBalance"></span></p>
+
           </div>
         </div>
       </nav>
@@ -241,39 +248,125 @@
       });
 
       function updateData() {
-        $('#goal').html(formatter.format(goal));
-        $('#progress').attr('max', goal);
-        $('#icon').addClass('fa-spin');
-        $('#icon').attr('title', "Refreshing...");
+    $('#goal').html(formatter.format(goal));
+    $('#progress').attr('max', goal);
+    $('#icon').addClass('fa-spin');
+    $('#icon').attr('title', "Refreshing...");
 
-        $.getJSON( "api.php", function(data) {
-          $('#btczUsd').html( formatterBtcz.format(data.btczUsd));
-          $('#ethUsd').html( formatter.format(data.ethUsd));
-          $('#btcUsd').html( formatter.format(data.btcUsd));
-          $('#zecUsd').html( formatter.format(data.zecUsd));
-          $('#ltcUsd').html( formatter.format(data.ltcUsd));
-          $('#USDTEUsd').html( formatter.format(data.USDTEUsd));
+    $.getJSON("api.php", function(data) {
+        // Update BTCZ USD price
+        if (data.btczBalance !== undefined) {
+                    $('#btczBalance').html(data.btczBalance + " BTCZ");
+                } else {
+                    $('#btczBalance').html('Error');
+                }
 
-          current = data.btczBalance * data.btczUsd;
-          current += data.ethBalance * data.ethUsd;
-          current += data.btcBalance * data.btcUsd;
-          current += data.zecBalance * data.zecUsd;
-          current += data.ltcBalance * data.ltcUsd;
-          current += data.USDTEBalance * data.USDTEUsd;
+                if (data.ethBalance !== undefined) {
+                    $('#ethBalance').html(data.ethBalance + " ETH");
+                } else {
+                    $('#ethBalance').html('Error');
+                }
 
-          $('#current').html(formatter.format(current));
-          $('#progress').attr('value', current);
-          $('#progress').html(current + '%');
+                if (data.btcBalance !== undefined) {
+                    $('#btcBalance').html(data.btcBalance + " BTC");
+                } else {
+                    $('#btcBalance').html('Error');
+                }
 
-        })
-        .fail(function(jqxhr, textStatus, error) {
-          alert('Error loading price data!');
-        })
-        .done(function() {
-          $('#icon').removeClass('fa-spin');
-          $('#icon').attr('title', "Refreshed every minute.");
-        });
-      }
+                if (data.zecBalance !== undefined) {
+                    $('#zecBalance').html(data.zecBalance + " ZEC");
+                } else {
+                    $('#zecBalance').html('Error');
+                }
+
+                if (data.ltcBalance !== undefined) {
+                    $('#ltcBalance').html(data.ltcBalance + " LTC");
+                } else {
+                    $('#ltcBalance').html('Error');
+                }
+
+                if (data.USDTEBalance !== undefined) {
+                    $('#USDTEBalance').html(data.USDTEBalance + " USDT");
+                } else {
+                    $('#USDTEBalance').html('Error');
+                }
+
+
+
+        if(data.btczUsd && !data.btczUsd.error) {
+            $('#btczUsd').html(formatterBtcz.format(data.btczUsd.value));
+        } else {
+            $('#btczUsd').html('Error');
+        }
+
+        // Update ETH USD price
+        if(data.ethUsd && !data.ethUsd.error) {
+            $('#ethUsd').html(formatter.format(data.ethUsd.value));
+        } else {
+            $('#ethUsd').html('Error');
+        }
+
+        // Update BTC USD price
+        if(data.btcUsd && !data.btcUsd.error) {
+            $('#btcUsd').html(formatter.format(data.btcUsd.value));
+        } else {
+            $('#btcUsd').html('Error');
+        }
+
+        // Update ZEC USD price
+        if(data.zecUsd && !data.zecUsd.error) {
+            $('#zecUsd').html(formatter.format(data.zecUsd.value));
+        } else {
+            $('#zecUsd').html('Error');
+        }
+
+        // Update LTC USD price
+        if(data.ltcUsd && !data.ltcUsd.error) {
+            $('#ltcUsd').html(formatter.format(data.ltcUsd.value));
+        } else {
+            $('#ltcUsd').html('Error');
+        }
+
+        // Update USDT USD price
+        if(data.USDTEUsd && !data.USDTEUsd.error) {
+            $('#USDTEUsd').html(formatter.format(data.USDTEUsd.value));
+        } else {
+            $('#USDTEUsd').html('Error');
+        }
+
+        var current = 0;
+        if(data.btczUsd && !data.btczUsd.error) {
+            current += data.btczBalance * data.btczUsd.value;
+        }
+        if(data.ethUsd && !data.ethUsd.error) {
+            current += data.ethBalance * data.ethUsd.value;
+        }
+        if(data.btcUsd && !data.btcUsd.error) {
+            current += data.btcBalance * data.btcUsd.value;
+        }
+        if(data.zecUsd && !data.zecUsd.error) {
+            current += data.zecBalance * data.zecUsd.value;
+        }
+        if(data.ltcUsd && !data.ltcUsd.error) {
+            current += data.ltcBalance * data.ltcUsd.value;
+        }
+        if(data.USDTEUsd && !data.USDTEUsd.error) {
+            current += data.USDTEBalance * data.USDTEUsd.value;
+        }
+
+        
+        $('#current').html(formatter.format(current));
+        $('#progress').attr('value', current);
+        $('#progress').html(current + '%');
+    })
+    .fail(function(jqxhr, textStatus, error) {
+        alert('Error loading price data!');
+    })
+    .done(function() {
+        $('#icon').removeClass('fa-spin');
+        $('#icon').attr('title', "Refreshed every minute.");
+    });
+}
 
       updateData();
       setInterval(updateData, 1000 * 60); // update every minute
@@ -282,5 +375,4 @@
 
   </body>
 </html>
-
 
