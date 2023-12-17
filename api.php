@@ -6,15 +6,37 @@ const BTCZ_ADDRESSES = [
     't3hTi3fXhcjgjRktoiucUKRtDXxV4GfEL1w',
 ];
 
-const API_KEY = 'NIEKSBV3HT23UCI2ATHA5M57VVS5UWY9TF';
-const CMC_API = '4fb2fb51-1b3b-4f13-9975-9593f1da4bf4';
-// const ZEC_API_KEY = 'fec78e6f0e9edb79108af6c87adc5efedd4a815a';
+const API_KEY = 'ETH API KEY';
+const CMC_API = 'CMC API KEY';
+const BNB_API_KEY = 'BNB API KEY';
 
 const ETH_ADDRESS = '0x4E3154bc8691BC480D0F317E866C064cC2c9455D';
 const BTC_ADDRESS = '1BzBfikDBGyWXGnPPk58nVVBppzfcGGXMx';
-const ZEC_ADDRESS = 't1ef9cxzpToGJcaSMXbTGRUDyrp76GfDLJG';
+const BNB_ADDRESS = '0xd9fa5b8480dfc2a86488eaf500d729dd26dda981';
 const LTC_ADDRESS = 'LR8bPo7NjPNRVy6nPLVgr9zHee2C7RepKA';
 const USDTE_ADDRESS = '0xD36591b20f738f6929272a4391B8C133CB2e5C96';
+
+const CACHE_PATH = __DIR__ . '/cache/';
+const CACHE_DURATION = 3600; // 1 hour in seconds
+
+
+function getCache($key) {
+    $cacheFile = CACHE_PATH . $key . '.cache';
+    if (file_exists($cacheFile) && (time() - filemtime($cacheFile)) < CACHE_DURATION) {
+        return json_decode(file_get_contents($cacheFile), true);
+    }
+    return false;
+}
+
+function setCache($key, $data) {
+    $cacheFile = CACHE_PATH . $key . '.cache';
+    if (file_put_contents($cacheFile, json_encode($data)) === false) {
+        debugLog("Failed to write cache file: " . $cacheFile);
+    } else {
+        debugLog("Cache file written: " . $cacheFile);
+    }
+}
+
 
 // const CACHE_TEMPLATE = __DIR__ . '/cache/%s.cache';
 
@@ -40,18 +62,22 @@ function debugLog($message) {
 
 
 function getCoinPrice($coin) {
-    // Define standard symbols for major cryptocurrencies
+    $cacheKey = 'price_' . $coin;
+    $cachedData = getCache($cacheKey);
+
+    if ($cachedData !== false) {
+        return $cachedData; // Return cached data if available and not expired
+    }
+
     $standardSymbols = [
-        'bitcoinz' => 'BTCZ', // Example, replace with actual symbol if different
+        'bitcoinz' => 'BTCZ',
         'ethereum' => 'ETH',
         'bitcoin' => 'BTC',
-        'zcash'  => 'ZEC',
+        'binance'  => 'BNB',
         'litecoin' => 'LTC',
         'tether'   => 'USDT'
-        
     ];
 
-    // Use the standard symbol if available
     $symbol = array_key_exists($coin, $standardSymbols) ? $standardSymbols[$coin] : strtoupper($coin);
 
     $url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=' . $symbol . '&convert=USD';
@@ -84,7 +110,10 @@ function getCoinPrice($coin) {
             throw new Exception("Price for $symbol not found in response");
         }
 
-        return ['error' => false, 'value' => (float) $decodedData['data'][$symbol]['quote']['USD']['price']];
+        $priceData = ['error' => false, 'value' => (float) $decodedData['data'][$symbol]['quote']['USD']['price']];
+        setCache($cacheKey, $priceData); // Set cache here
+
+        return $priceData;
     } catch (Exception $e) {
         debugLog("Error in getCoinPrice for $symbol: " . $e->getMessage());
         return ['error' => true, 'value' => null];
@@ -157,44 +186,25 @@ function getBtcBalance() {
     return $balanceInBtc;
 }
 
-// function getZcashBalance() {
-//     debugLog("getZcashBalance called");
-
-//     $url = 'https://rest.cryptoapis.io/blockchain-data/zcash/mainnet/addresses/' . ZEC_ADDRESS . '/balance';
-
-//     $request = new HttpRequest();
-//     $request->setUrl($url);
-//     $request->setMethod(HTTP_METH_GET);
-
-//     $request->setHeaders(array(
-//         'Content-Type' => 'application/json',
-//         'X-API-Key' => ZEC_API_KEY
-//     ));
-
-//     try {
-//         $response = $request->send();
-//         $body = $response->getBody();
-//         $decodedData = json_decode($body, true);
-
-//         if (json_last_error() !== JSON_ERROR_NONE) {
-//             debugLog("JSON decoding error: " . json_last_error_msg());
-//             return null;
-//         }
-
-//         if (!isset($decodedData['data']['item']['confirmedBalance']['amount'])) {
-//             debugLog("ZEC balance data not found in the API response");
-//             return null;
-//         }
-
-//         $balanceInZec = $decodedData['data']['item']['confirmedBalance']['amount'];
-//         debugLog("Fetched ZEC balance in ZEC: " . $balanceInZec);
-
-//         return $balanceInZec;
-//     } catch (HttpException $ex) {
-//         debugLog("HTTP exception occurred: " . $ex);
-//         return null;
-//     }
-// }
+function getBnbBalance() {
+    debugLog("getBnbBalance called");
+    $url = 'https://api.bscscan.com/api?module=account&action=balance&address='. BNB_ADDRESS .'&tag=latest&apikey=' . BNB_API_KEY;
+    $data = file_get_contents($url);
+    if ($data === false) {
+        debugLog("Failed to fetch BNB balance");
+        return null;
+    }
+    $data = json_decode($data, true);
+    if ($data['status'] !== "1") {
+        debugLog("Error in BNB balance response");
+        return null;
+    }
+    $balanceInWei = $data['result'];
+    $balanceInBnb = bcdiv($balanceInWei, '1000000000000000000', 18);
+    debugLog("BNB balance: " . $balanceInBnb);
+    // setCache('bnb-balance', $balanceInEth);
+    return $balanceInBnb;
+}
 
 
 
@@ -233,13 +243,13 @@ $response = [
     'btczBalance' => getBtczBalance(),
     'ethBalance' => getEthBalance(),
     'btcBalance' => getBtcBalance(),
-    //'zecBalance' => getZecBalance(),
+    'bnbBalance' => getBnbBalance(),
     'ltcBalance' => getLtcBalance(),
     'USDTEBalance' => getUSDTEBalance(),
     'btczUsd' => getCoinPrice('bitcoinz'),
     'ethUsd' => getCoinPrice('ethereum'),
     'btcUsd' => getCoinPrice('bitcoin'),
-    //'zecUsd' => getCoinPrice('zcash'),
+    'bnbUsd' => getCoinPrice('binance'),
     'ltcUsd' => getCoinPrice('litecoin'),
     'USDTEUsd' => getCoinPrice('tether')
 ];
